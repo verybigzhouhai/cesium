@@ -4025,7 +4025,7 @@ import ShadowMode from './ShadowMode.js';
         if ((alpha > 0.0) && (alpha < 1.0)) {
             var nodeCommands = model._nodeCommands;
             var length = nodeCommands.length;
-            if (defined(nodeCommands[0]) && (!defined(nodeCommands[0].translucentCommand) || forceDerive)) {
+            if ((!defined(nodeCommands[0].translucentCommand) || forceDerive)) {
                 for (var i = 0; i < length; ++i) {
                     var nodeCommand = nodeCommands[i];
                     var command = nodeCommand.command;
@@ -4733,8 +4733,9 @@ import ShadowMode from './ShadowMode.js';
         var invisible = isInvisible(this);
         var displayConditionPassed = defined(this.distanceDisplayCondition) ? distanceDisplayConditionVisible(this, frameState) : true;
         var show = this.show && displayConditionPassed && (this.scale !== 0.0) && (!invisible || silhouette);
+        var nodeCommandsLength = this.nodeCommands;
 
-        if ((show && this._state === ModelState.LOADED) || justLoaded) {
+        if (nodeCommandsLength > 0 && ((show && this._state === ModelState.LOADED) || justLoaded)) {
             var animated = this.activeAnimations.update(frameState) || this._cesiumAnimationsDirty;
             this._cesiumAnimationsDirty = false;
             this._dirty = false;

@@ -1751,6 +1751,14 @@ function createTileUniformMap(frameState, globeSurfaceTileProvider) {
     u_dayTextureOneOverGamma: function () {
       return this.properties.dayTextureOneOverGamma;
     },
+    // zhouhai for imagerylayer fitler
+    u_textureInvertColor: function() {
+      return this.properties.textureInvertColor
+    },
+    u_textureFilterColor: function() {
+        return this.properties.textureFilterColor
+    },
+    // zhouhai for imagerylayer fitler end
     u_dayIntensity: function () {
       return this.properties.dayIntensity;
     },
@@ -1915,6 +1923,8 @@ function createTileUniformMap(frameState, globeSurfaceTileProvider) {
       undergroundColor: Color.clone(Color.TRANSPARENT),
       undergroundColorAlphaByDistance: new Cartesian4(),
       lambertDiffuseMultiplier: 0.0,
+      textureInvertColor: [], // zhouhai for imagerylayer fitler
+      textureFilterColor: [], // zhouhai for imagerylayer fitler
       vertexShadowDarkness: 0.0,
     },
   };
@@ -2598,6 +2608,8 @@ function addDrawCommandsForTile(tileProvider, tile, frameState) {
     let applySaturation = false;
     let applyGamma = false;
     let applyAlpha = false;
+    let applyInvertColor = false; // zhouhai for imagerylayer fitler
+    let applyFilterColor = false; // zhouhai for imagerylayer fitler
     let applyDayNightAlpha = false;
     let applySplit = false;
     let applyCutout = false;
@@ -2705,6 +2717,14 @@ function addDrawCommandsForTile(tileProvider, tile, frameState) {
       applySplit =
         applySplit ||
         uniformMapProperties.dayTextureSplit[numberOfDayTextures] !== 0.0;
+
+        // zhouhai for imagerylayer fitler
+        uniformMapProperties.textureInvertColor[numberOfDayTextures] = !!imageryLayer.invertColor;
+        applyInvertColor = applyInvertColor || !!imageryLayer.invertColor;
+        
+        uniformMapProperties.textureFilterColor[numberOfDayTextures] = imageryLayer.filterColor ? new Cartesian3(imageryLayer.filterColor.red, imageryLayer.filterColor.green, imageryLayer.filterColor.blue) : new Cartesian3(1, 1, 1);
+        applyFilterColor = applyFilterColor || !!imageryLayer.filterColor;
+        // zhouhai for imagerylayer fitler end
 
       // Update cutout rectangle
       let dayTextureCutoutRectangle =
@@ -2815,6 +2835,8 @@ function addDrawCommandsForTile(tileProvider, tile, frameState) {
     surfaceShaderSetOptions.applyHue = applyHue;
     surfaceShaderSetOptions.applySaturation = applySaturation;
     surfaceShaderSetOptions.applyGamma = applyGamma;
+    surfaceShaderSetOptions.applyInvertColor = applyInvertColor; // zhouhai for imagerylayer fitler
+      surfaceShaderSetOptions.applyFilterColor = applyFilterColor; // zhouhai for imagerylayer fitler
     surfaceShaderSetOptions.applyAlpha = applyAlpha;
     surfaceShaderSetOptions.applyDayNightAlpha = applyDayNightAlpha;
     surfaceShaderSetOptions.applySplit = applySplit;

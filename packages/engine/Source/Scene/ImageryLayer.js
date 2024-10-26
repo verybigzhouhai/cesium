@@ -38,6 +38,7 @@ import Imagery from "./Imagery.js";
 import ImageryState from "./ImageryState.js";
 import SplitDirection from "./SplitDirection.js";
 import TileImagery from "./TileImagery.js";
+import Color from "../Core/Color.js";
 
 /**
  * @typedef {Object} ImageryLayer.ConstructorOptions
@@ -268,6 +269,31 @@ function ImageryLayer(imageryProvider, options) {
     defaultValue(imageryProvider._defaultGamma, ImageryLayer.DEFAULT_GAMMA),
   );
 
+  // zhouhai for imagerylayer fitler
+  /**
+   * The gamma correction to apply to this layer.  1.0 uses the unmodified imagery color.
+   *
+   * @type {boolean}
+   * @default {@link ImageryLayer.DEFAULT_GAMMA}
+   */
+  this.invertColor = defaultValue(
+    options.invertColor,
+    defaultValue(imageryProvider._defaultInvertColor, false)
+  );
+
+  /**
+   * The gamma correction to apply to this layer.  1.0 uses the unmodified imagery color.
+   *
+   * @type {color}
+   * @default {@link ImageryLayer.DEFAULT_GAMMA}
+   */
+  this.filterColor = defaultValue(
+    options.filterColor,
+    defaultValue(imageryProvider._defaultFilterColor, Color.WHITE)
+  );
+  // zhouhai for imagerylayer fitler end
+  
+  
   /**
    * The {@link SplitDirection} to apply to this layer.
    *

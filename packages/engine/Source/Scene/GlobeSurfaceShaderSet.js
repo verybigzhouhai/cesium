@@ -106,6 +106,8 @@ GlobeSurfaceShaderSet.prototype.getShaderProgram = function (options) {
   const applyHue = options.applyHue;
   const applySaturation = options.applySaturation;
   const applyGamma = options.applyGamma;
+  const applyInvertColor = options.applyInvertColor; // zhouhai for imagerylayer fitler
+  const applyFilterColor = options.applyFilterColor; // zhouhai for imagerylayer fitler
   const applyAlpha = options.applyAlpha;
   const applyDayNightAlpha = options.applyDayNightAlpha;
   const applySplit = options.applySplit;
@@ -275,6 +277,14 @@ GlobeSurfaceShaderSet.prototype.getShaderProgram = function (options) {
     if (applyGamma) {
       fs.defines.push("APPLY_GAMMA");
     }
+    // zhouhai for imagerylayer fitler
+    if (applyInvertColor) {
+      fs.defines.push("APPLY_INVERT_COLOR");
+    }
+    if (applyFilterColor) {
+      fs.defines.push("APPLY_FILTER_COLOR");
+    }
+    // zhouhai for imagerylayer fitler
     if (applyAlpha) {
       fs.defines.push("APPLY_ALPHA");
     }
@@ -416,6 +426,8 @@ GlobeSurfaceShaderSet.prototype.getShaderProgram = function (options) {
             ${applyHue ? `u_dayTextureHue[${i}]` : "0.0"},\n\
             ${applySaturation ? `u_dayTextureSaturation[${i}]` : "0.0"},\n\
             ${applyGamma ? `u_dayTextureOneOverGamma[${i}]` : "0.0"},\n\
+            ${applyInvertColor ? `u_textureInvertColor[${i}]` : "false"},\n\ // zhouhai for imagerylayer fitler
+            ${applyFilterColor ? `u_textureFilterColor[${i}]` : "vec3(1.0)"},\n\ // zhouhai for imagerylayer fitler
             ${applySplit ? `u_dayTextureSplit[${i}]` : "0.0"},\n\
             ${colorToAlpha ? `u_colorsToAlpha[${i}]` : "vec4(0.0)"},\n\
         nightBlend\

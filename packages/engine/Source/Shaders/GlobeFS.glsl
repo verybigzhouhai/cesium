@@ -38,6 +38,16 @@ uniform float u_dayTextureSaturation[TEXTURE_UNITS];
 uniform float u_dayTextureOneOverGamma[TEXTURE_UNITS];
 #endif
 
+// zhouhai for imagerylayer fitler  
+#ifdef APPLY_INVERT_COLOR
+    uniform bool u_textureInvertColor[TEXTURE_UNITS];
+#endif
+
+#ifdef APPLY_FILTER_COLOR
+    uniform vec3 u_textureFilterColor[TEXTURE_UNITS];
+#endif
+//  zhouhai for imagerylayer fitler
+
 #ifdef APPLY_IMAGERY_CUTOUT
 uniform vec4 u_dayTextureCutoutRectangles[TEXTURE_UNITS];
 #endif
@@ -171,6 +181,8 @@ vec4 sampleAndBlend(
     vec4 textureCoordinateTranslationAndScale,
     float textureAlpha,
     float textureNightAlpha,
+    bool textureInvertColor, // zhouhai for imagerylayer fitler  
+    vec3 texturefilterColor, // zhouhai for imagerylayer fitler
     float textureDayAlpha,
     float textureBrightness,
     float textureContrast,
@@ -246,6 +258,20 @@ vec4 sampleAndBlend(
 #ifdef APPLY_SATURATION
     color = czm_saturation(color, textureSaturation);
 #endif
+
+// zhouhai for imagerylayer fitler  
+    #ifdef APPLY_INVERT_COLOR
+        if(textureInvertColor) {
+            color = vec3(1.0 - color.r, 1.0 - color.g, 1.0 - color.b);
+        }
+    #endif
+
+    #ifdef APPLY_FILTER_COLOR
+        if(texturefilterColor.x != 1.0 || texturefilterColor.y != 1.0 || texturefilterColor.z != 1.0) {
+            color = vec3(color.r * texturefilterColor.x, color.g * texturefilterColor.y, color.b * texturefilterColor.z);
+        }
+    #endif
+    // zhouhai for imagerylayer fitler  end
 
     float sourceAlpha = alpha * textureAlpha;
     float outAlpha = mix(previousColor.a, 1.0, sourceAlpha);
